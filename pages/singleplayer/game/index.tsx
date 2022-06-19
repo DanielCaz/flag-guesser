@@ -65,10 +65,12 @@ const SinglePlayerGame = ({ countries }: { countries: Country[] }) => {
           <h1 className={`text-${gameWon ? "success" : "danger"}`}>
             {gameWon ? "Correct!" : "Incorrect"}
           </h1>
-          <button type="button" className="btn btn-info" onClick={resetGame}>
-            Play again!
-          </button>
         </div>
+      )}
+      {gameWon && (
+        <button type="button" className="btn btn-info" onClick={resetGame}>
+          Play again!
+        </button>
       )}
       {country && (
         <div className="align-self-center">
