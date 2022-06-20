@@ -16,6 +16,7 @@ const SinglePlayerGame = ({ countries }: { countries: Country[] }) => {
   const [incorrectAttempts, setIncorrectAttempts] = useState(0);
   const [gameWon, setGameWon] = useState(false);
   const [showH1, setShowH1] = useState(false);
+  const [gaveUp, setGaveUp] = useState(false);
 
   const pickCountry = () => {
     const randIndex = Math.floor(Math.random() * (countries.length - 1));
@@ -35,8 +36,8 @@ const SinglePlayerGame = ({ countries }: { countries: Country[] }) => {
       setTimeout(() => {
         setShowH1(false);
       }, 3000);
+      setGuessedCountry("");
     }
-    setGuessedCountry("");
     setShowH1(true);
   };
 
@@ -56,21 +57,25 @@ const SinglePlayerGame = ({ countries }: { countries: Country[] }) => {
     pickCountry();
     setShowHints(false);
     setGameWon(false);
+    setGaveUp(false);
   };
+
+  const giveUp = () => {
+    setGuessedCountry(country);
+    setShowH1(true);
+    setGaveUp(true);
+  }
 
   return (
     <div className="container py-4 d-flex flex-column">
-      {showH1 && (
-        <div className="mb-2">
-          <h1 className={`text-${gameWon ? "success" : "danger"}`}>
-            {gameWon ? "Correct!" : "Incorrect"}
-          </h1>
-        </div>
-      )}
-      {gameWon && (
+      {(gameWon || gaveUp) && (
         <button type="button" className="btn btn-info" onClick={resetGame}>
           Play again!
         </button>
+      )}
+      {!gameWon && (<button type="button" className="btn btn-info" onClick={giveUp}>
+          Give up
+      </button>
       )}
       {country && (
         <div className="align-self-center">
@@ -82,6 +87,13 @@ const SinglePlayerGame = ({ countries }: { countries: Country[] }) => {
             priority
             className="border rounded p-3"
           />
+        </div>
+      )}
+      {showH1 && (
+        <div className="mb-2">
+          <h1 className={`text-${gameWon ? "success" : "danger"}`}>
+            {gameWon ? "Correct!" : "Incorrect"}
+          </h1>
         </div>
       )}
       <div className="row row-cols-sm-2 row-cols-1 g-3 mt-3">
@@ -96,7 +108,7 @@ const SinglePlayerGame = ({ countries }: { countries: Country[] }) => {
                 type="button"
                 className="btn btn-primary mb-1"
                 onClick={() => setShowHints(!showHints)}
-                disabled={gameWon}
+                disabled={gameWon || gaveUp}
               >
                 {showHints ? "Hide hints" : "Show hints"}
               </button>
@@ -137,13 +149,13 @@ const SinglePlayerGame = ({ countries }: { countries: Country[] }) => {
                   ? country.name.common.substring(0, 1)
                   : ""
               }
-              disabled={gameWon}
+              disabled={gameWon || gaveUp}
             />
             <input
               type="submit"
               value="Guess"
               className="btn btn-primary mt-4 w-100"
-              disabled={gameWon}
+              disabled={gameWon || gaveUp}
             />
             <datalist id="dataListCountries">
               {countries.map((countryItem) => {
