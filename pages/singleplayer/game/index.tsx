@@ -58,10 +58,11 @@ const SinglePlayerGame = ({ countries }: { countries: Country[] }) => {
     setShowHints(false);
     setGameWon(false);
     setGaveUp(false);
+    setGuessedCountry("");
   };
 
   const giveUp = () => {
-    setGuessedCountry(country);
+    setGuessedCountry(country.name.common);
     setShowH1(true);
     setGaveUp(true);
   }
